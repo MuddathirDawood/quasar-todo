@@ -9,19 +9,33 @@
         <q-item-label header>Tasks</q-item-label>
         <q-item clickable v-ripple v-for="(task, index) in tasks" :key="task">
           <q-item-section>{{task}}</q-item-section>
-          <q-item-section avatar><q-icon color="green" text-color="white" name="check" @click="doneTask(index)"/></q-item-section>
+          <q-item-section avatar><q-icon color="green" name="check" @click="doneTask(index)"/></q-item-section>
         </q-item>
       </q-list>
     </div>
     <div class="row">
       <q-list highlight bordered class="col" padding>
         <q-item-label header>Done</q-item-label>
-        <q-item clickable v-ripple v-for="task in done" :key="task">
+        <q-item clickable v-ripple v-for="(task, index) in done" :key="task">
           <q-item-section>{{task}}</q-item-section>
+          <q-item-section avatar><q-icon color="red" name="close" @click="confirm = true"/></q-item-section>
         </q-item>
       </q-list>
     </div>
   </q-page>
+
+  <q-dialog v-model="confirm" persistent>
+      <q-card>
+        <q-card-section class="row items-center">
+          <span class="q-ml-sm">Are you sure you want to delete this task?</span>
+        </q-card-section>
+
+        <q-card-actions align="right">
+          <q-btn flat label="No" color="primary" v-close-popup />
+          <q-btn flat label="Yes" color="primary" v-close-popup @click="deleteTask(index)"/>
+        </q-card-actions>
+      </q-card>
+    </q-dialog>
 </template>
 
 <script>
@@ -33,7 +47,8 @@ export default defineComponent({
     return{
       text:'',
       tasks:[],
-      done:[]
+      done:[],
+      confirm: false
     }
   },
   methods:{
@@ -44,6 +59,9 @@ export default defineComponent({
     doneTask(id){
       this.done.push(this.tasks[id])
       this.tasks.splice(id, 1)
+    },
+    deleteTask(id){
+      this.done.splice(id, 1)
     }
   }
 })
